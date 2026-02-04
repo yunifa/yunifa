@@ -1,22 +1,19 @@
 <?php 
 include '../koneksiYunifa.php';
 
-// Ambil parameter filter
 $filter_kelas    = $_GET['f_kelas']    ?? '';
-$filter_semester = $_GET['f_semester'] ?? '';
-$filter_tahun    = $_GET['f_tahun']    ?? '';
 
-// 1. Inisialisasi Query Dasar
-$sqlYunifa = mysqli_query($koneksiYunifa, "SELECT a.id_siswa, a.nis, a.nama, b.kelas, c.semester, c.tahun_ajaran 
+$sqlYunifaStr = "SELECT a.id_siswa, a.nis, a.nama, b.kelas, c.semester, c.tahun_ajaran 
           FROM siswa_yunifa a 
           INNER JOIN kelas_yunifa b ON a.id_kelas = b.id_kelas 
           LEFT JOIN nilai_yunifa c ON a.id_siswa = c.id_siswa 
-          WHERE 1=1 GROUP BY a.id_siswa ORDER BY b.kelas ASC, a.nama ASC"); 
+          WHERE 1=1";
 
-// 2. Tambahkan Kondisi Filter
-if($filter_kelas != '')    { $sqlYunifa .= " AND b.kelas = '$filter_kelas'"; }
-if($filter_semester != '') { $sqlYunifa .= " AND c.semester = '$filter_semester'"; }
-if($filter_tahun != '')    { $sqlYunifa .= " AND c.tahun_ajaran = '$filter_tahun'"; }
+if($filter_kelas != '')    { $sqlYunifaStr .= " AND b.kelas = '$filter_kelas'"; }
+
+
+$sqlYunifaStr .= " GROUP BY a.id_siswa ORDER BY b.kelas ASC, a.nama ASC";
+$sqlYunifa = mysqli_query($koneksiYunifa, $sqlYunifaStr);
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +48,25 @@ if($filter_tahun != '')    { $sqlYunifa .= " AND c.tahun_ajaran = '$filter_tahun
         .btn-lihat { text-decoration: none; background: #28a745; color: white; padding: 5px 12px; border-radius: 4px; font-size: 12px; transition: 0.3s; }
         .btn-lihat:hover { background: #218838; }
         
+        .btn-cetak {
+            display: inline-block;
+            background: #28a745;
+            color: #fff;
+            font-weight: bold;
+            padding: 8px 18px;
+            border-radius: 5px;
+            font-size: 15px;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(32,201,151,0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+            margin-right: 15px;
+            border: none;
+        }
+        .btn-cetak:hover {
+            background: #218838;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(23,162,184,0.15);
+        }
         .empty-row { text-align: center; color: #6c757d; font-style: italic; }
     </style>
 </head>
@@ -62,6 +78,7 @@ if($filter_tahun != '')    { $sqlYunifa .= " AND c.tahun_ajaran = '$filter_tahun
     <div class="filter-box">
         <form method="GET" action="">
             <div>
+                <a href="../../cetak_semua.php" target="_blank" class="btn-cetak">Cetak Semua Rapot</a>
                 <label>Kelas:</label>
                 <select name="f_kelas">
                     <option value="">Semua Kelas</option>
@@ -72,24 +89,6 @@ if($filter_tahun != '')    { $sqlYunifa .= " AND c.tahun_ajaran = '$filter_tahun
                         echo "<option value='".$k['kelas']."' $selected>".$k['kelas']."</option>";
                     }
                     ?>
-                </select>
-            </div>
-
-            <div>
-                <label>Semester:</label>
-                <select name="f_semester">
-                    <option value="">Semua</option>
-                    <option value="1" <?= ($filter_semester == '1') ? 'selected' : ''; ?>>1 (Ganjil)</option>
-                    <option value="2" <?= ($filter_semester == '2') ? 'selected' : ''; ?>>2 (Genap)</option>
-                </select>
-            </div>
-
-            <div>
-                <label>Tahun:</label>
-                <select name="f_tahun">
-                    <option value="">Semua</option>
-                    <option value="2024-2025" <?= ($filter_tahun == '2024-2025') ? 'selected' : ''; ?>>2024-2025</option>
-                    <option value="2025-2026" <?= ($filter_tahun == '2025-2026') ? 'selected' : ''; ?>>2025-2026</option>
                 </select>
             </div>
 
@@ -105,8 +104,6 @@ if($filter_tahun != '')    { $sqlYunifa .= " AND c.tahun_ajaran = '$filter_tahun
                 <th>Nama</th>
                 <th width="15%">Kelas</th>
                 <th width="15%">NIS</th>
-                <th width="10%">Semester</th>
-                <th width="15%">Tahun Ajaran</th>
                 <th width="10%">Aksi</th>
             </tr>
         </thead>
@@ -120,8 +117,6 @@ if($filter_tahun != '')    { $sqlYunifa .= " AND c.tahun_ajaran = '$filter_tahun
                         <td><strong><?= strtoupper($sqly['nama']); ?></strong></td>
                         <td><?= $sqly['kelas']; ?></td>
                         <td><?= $sqly['nis']; ?></td>
-                        <td><?= $sqly['semester'] ?? '-'; ?></td>
-                        <td><?= $sqly['tahun_ajaran'] ?? '-'; ?></td>
                         <td>
                             <a href="../rapot/readRapotYunifa.php?id_siswa=<?= $sqly['id_siswa']; ?>" class="btn-lihat">LIHAT</a>
                         </td>

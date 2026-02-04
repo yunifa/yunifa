@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 29, 2026 at 02:58 AM
+-- Generation Time: Feb 04, 2026 at 05:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -136,13 +136,12 @@ CREATE TABLE `nilai_yunifa` (
 --
 
 INSERT INTO `nilai_yunifa` (`id_nilai`, `id_siswa`, `id_mapel`, `nilai_tugas`, `nilai_uts`, `nilai_uas`, `nilai_akhir`, `deskripsi`, `semester`, `tahun_ajaran`) VALUES
-('NS000', 2, 'MP004', '52', '68', '78', NULL, '-', '1', '2024-2024'),
-('NS001', 2, 'MP001', '54', '98', '65', NULL, '-', '1', '2024-2024'),
-('NS002', 1, 'MP002', '89', '78', '67', NULL, '-', '1', '2024-2024'),
-('NS003', 4, 'MP003', '98', '78', '78', NULL, '-', '1', '2024-2024'),
-('NS004', 3, 'MP002', '90', '89', '78', NULL, '', '1', '2024-2025'),
-('NS005', 3, 'MP001', '89', '98', '87', NULL, '', '1', '2024-2025'),
-('NS006', 3, 'MP001', '90', '89', '78', NULL, '', '2', '2024-2025');
+('NS007', 3, 'MP002', '90', '89', '99', '92.666666666667', 'Sangat Baik. Menunjukkan pemahaman yang sangat mendalam pada semua materi.', '2', '2025-2026'),
+('NS008', 3, 'MP001', '90', '89', '99', '92.666666666667', 'Sangat Baik. Menunjukkan pemahaman yang sangat mendalam pada semua materi.', '1', '2024-2025'),
+('NS009', 4, 'MP002', '90', '78', '45', '71', 'Cukup. Pemahaman materi sudah memenuhi standar minimal.', '1', '2024-2025'),
+('NS010', 1, 'MP004', '89', '67', '100', '85.333333333333', 'Baik. Sudah memahami sebagian besar materi dengan baik.', '2', '2025-2026'),
+('NS011', 2, 'MP003', '90', '77', '89', '85.333333333333', 'Baik. Sudah memahami sebagian besar materi dengan baik.', '1', '2025-2026'),
+('NS012', 3, 'MP003', '89', '78', '90', '85.666666666667', 'Baik. Sudah memahami sebagian besar materi dengan baik.', '2', '2024-2025');
 
 -- --------------------------------------------------------
 

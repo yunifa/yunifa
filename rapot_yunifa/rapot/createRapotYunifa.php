@@ -1,10 +1,6 @@
 <?php 
 include '../koneksiYunifa.php'; 
-
-// Ambil ID Siswa dari URL
 $id_siswa = $_GET['id_siswa'];
-
-// Ambil data siswa untuk ditampilkan di header form
 $ambilSiswa = mysqli_query($koneksiYunifa, "SELECT * FROM siswa_yunifa WHERE id_siswa = '$id_siswa'");
 $dataSiswa = mysqli_fetch_array($ambilSiswa);
 ?>
@@ -16,7 +12,6 @@ $dataSiswa = mysqli_fetch_array($ambilSiswa);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Nilai Rapot - <?= $dataSiswa['nama']; ?></title>
     <style>
-        /* CSS Tema Seragam */
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
@@ -26,7 +21,6 @@ $dataSiswa = mysqli_fetch_array($ambilSiswa);
         
         h2 { margin: 0; color: #2c3e50; flex-grow: 1; text-align: center; font-size: 20px; }
 
-        /* Styling Form */
         table { width: 100%; border-collapse: collapse; }
         td { padding: 12px 5px; vertical-align: middle; }
         td:first-child { width: 35%; font-weight: bold; color: #444; }
@@ -118,7 +112,6 @@ $dataSiswa = mysqli_fetch_array($ambilSiswa);
 
     <?php
     if(isset($_POST['tambah'])) {
-        // Otomatisasi ID Nilai (NS001, dst)
         $sqly = mysqli_query($koneksiYunifa, "SELECT id_nilai FROM nilai_yunifa ORDER BY id_nilai DESC LIMIT 1");
         $data = mysqli_fetch_array($sqly);
 
@@ -130,7 +123,6 @@ $dataSiswa = mysqli_fetch_array($ambilSiswa);
         }
         $id_nilai = "NS" . str_pad($no, 3, "0", STR_PAD_LEFT);
 
-        // Ambil Data dari Form
         $id_siswa_post = $_POST['id_siswa_hidden'];
         $mapel         = $_POST['mapel'];
         $tugas         = $_POST['tugas'];
@@ -139,14 +131,24 @@ $dataSiswa = mysqli_fetch_array($ambilSiswa);
         $semester      = $_POST['semester'];
         $tahun         = $_POST['tahunajaran'];
 
-        // Cek apakah nilai mapel tersebut sudah ada di semester yang sama untuk siswa ini
+        $ratarata = ($tugas + $uts + $uas) / 3;
+        if ($ratarata >= 90) {
+            $deskripsi = "Sangat Baik. Menunjukkan pemahaman yang sangat mendalam pada semua materi.";
+        } elseif ($ratarata >= 80) {
+            $deskripsi = "Baik. Sudah memahami sebagian besar materi dengan baik.";
+        } elseif ($ratarata >= 70) {
+            $deskripsi = "Cukup. Pemahaman materi sudah memenuhi standar minimal.";
+        } else {
+            $deskripsi = "Perlu Bimbingan. Belum mencapai kriteria ketuntasan minimal.";
+        }
+
         $cek = mysqli_query($koneksiYunifa, "SELECT * FROM nilai_yunifa WHERE id_siswa='$id_siswa_post' AND id_mapel='$mapel' AND semester='$semester' AND tahun_ajaran='$tahun'");
         
         if (mysqli_num_rows($cek) > 0) {
             echo "<script>alert('Gagal! Nilai mata pelajaran ini sudah diinput untuk semester & tahun ajaran tersebut.');</script>";
         } else {
-            $queryInsert = "INSERT INTO nilai_yunifa (id_nilai, id_siswa, id_mapel, nilai_tugas, nilai_uts, nilai_uas, semester, tahun_ajaran) 
-                            VALUES ('$id_nilai', '$id_siswa_post', '$mapel', '$tugas', '$uts', '$uas', '$semester', '$tahun')";
+            $queryInsert = "INSERT INTO nilai_yunifa (id_nilai, id_siswa, id_mapel, nilai_tugas, nilai_uts, nilai_uas, nilai_akhir, deskripsi, semester, tahun_ajaran) 
+                            VALUES ('$id_nilai', '$id_siswa_post', '$mapel', '$tugas', '$uts', '$uas', '$ratarata', '$deskripsi', '$semester', '$tahun')";
             
             if (mysqli_query($koneksiYunifa, $queryInsert)) {
                 echo "<script>
